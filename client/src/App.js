@@ -1,5 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
+import useEffect from 'react';
+
+useEffect(() => {
+  fetch("/users")
+    .then(response => console.log(response))
+},[])
 
 function App() {
   return (
