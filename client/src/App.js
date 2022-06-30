@@ -2,12 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 import useEffect from 'react';
 
-useEffect(() => {
-  fetch("/users")
-    .then(response => console.log(response))
-},[])
-
 function App() {
+  
+  useEffect(() => {
+    fetch("/users")
+      .then(response => console.log(response))
+  },[])
+
   return (
     <div className="App">
       <header className="App-header">
