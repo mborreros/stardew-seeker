@@ -3,9 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {LinkContainer} from 'react-router-bootstrap'
 
-import { NavLink } from "react-router-dom";
-
-function Navigation() {
+function Navigation({ user }) {
 
   return (
 
@@ -15,8 +13,11 @@ function Navigation() {
           <Navbar.Brand>Stardew Seeker</Navbar.Brand>
         </LinkContainer>
         <Nav className="me-auto">
-          <LinkContainer to="/test">
-            <Nav.Link>Test</Nav.Link>
+        <LinkContainer to="/signup">
+            <Nav.Link>Sign Up</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/login">
+            <Nav.Link>Login</Nav.Link>
           </LinkContainer>
           <LinkContainer to="/all-goals">
             <Nav.Link>Browse Goals</Nav.Link>
@@ -28,6 +29,17 @@ function Navigation() {
             <Nav.Link>My Account</Nav.Link>
           </LinkContainer>
         </Nav>
+
+        {/* conditional rendering of which user is logged in, right top corner */}
+        {user ? 
+        <Navbar.Text>
+        signed in as: {user.username}
+        </Navbar.Text> :
+        <></>
+        }
+
+        
+
       </Container>
     </Navbar>
 
