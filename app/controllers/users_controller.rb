@@ -8,11 +8,11 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = User.find_by(id: params[:id])
-    if user
-      render json: user, status: :ok
+    current_user = User.find_by(id: session[:user_id])
+    if current_user
+      render json: current_user, status: :ok
     else
-      render json: {error: "User not found"}, status: :not_found
+      render json: {error: "User not logged in"}, status: :unauthorized
     end
   end
 

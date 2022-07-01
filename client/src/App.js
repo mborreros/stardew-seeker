@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 // import referenced components
@@ -15,9 +15,20 @@ function App() {
 
   const [user, setUser] = useState(null);
 
+  // auto login
+  useEffect(() => {
+    fetch("/auth")
+      .then((response) => {
+        if (response.ok){
+          response.json().then((user) => setUser(user))
+        }
+      }
+    )
+  }, [])
+
   return (
     <div>
-      <Navigation user={user}/>
+      <Navigation user={user} setUser={setUser}/>
       <Routes>
         <Route exact path="/" element={ <Home/> } />
         <Route path="/signup" element={ <SignUpForm setUser={setUser}/> } />

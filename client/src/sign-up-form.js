@@ -2,12 +2,15 @@ import { useState } from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
+import Row from 'react-bootstrap/Row'
 
 function SignUpForm({ setUser }) {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [formError, setFormError] = useState(false);
 
   function handleSignUp(e){
     e.preventDefault()
@@ -26,14 +29,20 @@ function SignUpForm({ setUser }) {
       if (response.ok) {
         response.json().then((user) => setUser(user));
       } else {
-        response.json().then((err) => setErrors(err.errors));
+        response.json().then((err) => setErrors(err.errors))
+        .then(() => setFormError(true))
     }})
   }
 
   return (
     <div>
-      <Container>
+      <Container className="mt-4">
       <p> sign up form </p>
+
+      <Alert show={formError} variant="danger" onClose={() => setFormError(false)} dismissible>
+          Error: {errors}
+      </Alert>
+
     {/* login form */}
       <Form onSubmit={handleSignUp}>
         <Form.Group className="mb-3" controlId="formUsername">
@@ -58,12 +67,6 @@ function SignUpForm({ setUser }) {
           sign up
         </Button>
       </Form>
-
-      {/* error handling */}
-      <p>error messages</p>
-      {errors.map((error) => (
-        <p key={error}>{error}</p>
-      ))}
 
       </Container>
     </div>

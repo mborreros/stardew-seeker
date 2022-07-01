@@ -2,33 +2,44 @@ import { useState } from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
+import { Redirect } from 'react-router-dom';
 
 function LogInForm({ setUser }) {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [formError, setFormError] = useState(false);
 
   function handleLogIn(e){
     e.preventDefault()
+      
+      fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify({ username, password })
+      })
+      .then(response => {
+        if (response.ok) {
+          response.json().then((user) => setUser(user));
+          // redirect on login 
+          
+        } else {
+          response.json().then((err) => setErrors(err.errors))
+          .then(() => setFormError(true))
+        }})
 
-    fetch("/login", {
-      method: "POST",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify({ username, password })
-    })
-    .then(response => {
-      if (response.ok) {
-        response.json().then((user) => setUser(user));
-      } else {
-        response.json().then((err) => setErrors(err.errors));
-    }})
   }
 
   return (
     <div>
-      <Container>
+      <Container className="mt-4">
       <p> log in form </p>
+
+      <Alert show={formError} variant="danger" onClose={() => setFormError(false)} dismissible>
+          Error: {errors}
+      </Alert>
 
       <Form onSubmit={handleLogIn}>
         <Form.Group className="mb-3" controlId="formUsername">
@@ -52,14 +63,8 @@ function LogInForm({ setUser }) {
         <Button variant="primary" type="submit">
           log in
         </Button>
+
       </Form>
-
-      {/* error handling */}
-      <p>error messages</p>
-      {errors.map((error) => (
-        <p key={error}>{error}</p>
-      ))}
-
       </Container>
     </div>
   );
