@@ -18,7 +18,11 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem "rack-cors"
 
+# foreman to automate running front and backend with one terminal command
 gem "foreman"
+
+# password encryption
+gem 'bcrypt'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
