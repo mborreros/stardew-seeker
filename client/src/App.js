@@ -9,9 +9,6 @@ import LogInForm from "./log-in-form";
 import SignUpForm from "./sign-up-form";
 import AllGoals from "./all-goals";
 
-// bootstrap style sheet
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 function App() {
 
   const [user, setUser] = useState(null);

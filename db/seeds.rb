@@ -23,3 +23,26 @@ Goal.create([
 ])
 
 puts "Goals seeding completed"
+
+puts "Seeding tags"
+
+categoriy_types = ["farming", "love", "friendship", "bundles", "mining", "fishing", "building", "farm layout", "cooking", "foraging", "animals", "town"]
+
+categoriy_types.each do |category|
+  Tag.create([{category: category}])
+end
+
+puts "Tags seeding completed"
+
+puts "Seeding goal/tag join table"
+
+GoalTag.create([
+  {goal_id: 1, tag_id: 1},
+  {goal_id: 2, tag_id: 12},
+  {goal_id: 3, tag_id: 6},
+  {goal_id: 4, tag_id: 2},
+  {goal_id: 5, tag_id: 3},
+  {goal_id: 6, tag_id: 7}
+])
+
+puts "Goal/Tag join table seeding completed"
