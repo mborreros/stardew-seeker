@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
-
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
+
+  # skip_before_action :authorized
+  # , only: :show
 
   def index
     users = User.all

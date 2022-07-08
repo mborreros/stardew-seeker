@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   scope "/api" do
     #all backend routes go here
     resources :users, only: [:index, :show]
+    resources :goals, only: [:index, :show]
   end
 
   post "/signup", to: "users#create"

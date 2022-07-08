@@ -50,8 +50,8 @@ function Navigation({ user, setUser }) {
         </Col>
          :
          <Col className='d-flex justify-content-end'>
-          <Button variant="outline-secondary" size="sm" as={Link} to="/login" className='mx-1'>Login</Button>
-          <Button variant="secondary" size="sm" as={Link} to="/signup" className='mx-1'>Sign up</Button>
+          <Button variant="outline-secondary" size="sm" as={Link} to="/login-page" className='mx-1'>Login</Button>
+          <Button variant="secondary" size="sm" as={Link} to="/signup-page" className='mx-1'>Sign up</Button>
          </Col>
         }
 

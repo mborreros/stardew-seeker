@@ -22,8 +22,9 @@ function LogInForm({ setUser }) {
       })
       .then(response => {
         if (response.ok) {
+          // setUser(user)
           response.json().then((user) => setUser(user));
-          // redirect on login 
+          // redirect on login needs to be built out
           
         } else {
           response.json().then((err) => setErrors(err.errors))
