@@ -3,7 +3,7 @@ class Goal < ApplicationRecord
   has_many :goal_tags
   has_many :tags, through: :goal_tags
 
-  validates :title, uniqueness: true, presence: true
+  validates :title, presence: true
   validates :status, presence: true
 
 end

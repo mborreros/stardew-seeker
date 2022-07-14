@@ -45,7 +45,7 @@ function Navigation({ user, setUser }) {
         {/* conditional rendering of which user is logged in, right top corner */}
         { user ? 
         <Col className='d-flex justify-content-end align-items-center'>
-          <Navbar.Text className="p-2 mx-1">signed in as: {user.username} </Navbar.Text>
+          <Navbar.Text className="p-2 mx-1">signed in as: {user.name} </Navbar.Text>
           <Button variant="secondary" size="sm" onClick={handleLogout} className='mx-1'>Logout</Button>
         </Col>
          :

@@ -2,8 +2,9 @@ Rails.application.routes.draw do
   scope "/api" do
     #all backend routes go here
     resources :users, only: [:index, :show]
-    resources :goals, only: [:index, :show]
+    resources :goals, only: [:index, :show, :create, :destroy]
     resources :tags, only: [:index, :show]
+    get "/my_goals/:id", to: "goals#user_goals"
   end
 
   post "/signup", to: "users#create"
