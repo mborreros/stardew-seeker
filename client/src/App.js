@@ -13,14 +13,15 @@ function App() {
 
   const [user, setUser] = useState(null);
   const [allGoals, setAllGoals] = useState(null);
+  const [myGoals, setMyGoals] = useState(null);
 
   // auto login
   useEffect(() => {
     fetch("/auth")
       .then((response) => {
-        if (response.ok){
+        if (response.ok) {
           response.json().then((user) => setUser(user))
-        }
+        } else (console.log("User was not retrieved properly from the server, please try again"))
       }
     )
   }, [])
@@ -29,12 +30,22 @@ function App() {
   useEffect(() => {
     fetch("/api/goals")
     .then((response) => {
-      if (response.ok){
+      if (response.ok) {
         response.json().then((goals) => setAllGoals(goals))
-      }
-      else (console.log("Goals were not retrieved properly from the server, please try again"))
+      } else (console.log("Goals were not retrieved properly from the server, please try again"))
     })
   }, [])
+
+  // fetching user specific goals whenever user state changes
+  useEffect(() => {
+    if (user) {
+      fetch(`/api/my_goals/${user.id}`)
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((goals) => setMyGoals(goals))
+        } else (console.log("Goals were not retrieved properly from the server, please try again."))
+      })
+    }}, [user]) 
 
   return (
     <div>
@@ -43,8 +54,8 @@ function App() {
         <Route exact path="/" element={ <Home user={user}/> } />
         <Route path="/signup-page" element={ <SignUpForm setUser={setUser} /> } />
         <Route path="/login-page" element={ <LogInForm setUser={setUser} /> } />
-        <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} allGoals={allGoals} setAllGoals={setAllGoals} /> } />
-        <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} /> } />
+        <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} goals={allGoals} setAllGoals={setAllGoals} /> } />
+        <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} goals={myGoals} setMyGoals={setMyGoals}/> } />
         <Route path="/my-account" element={ <TestPage /> } />
       </Routes>
     </div>

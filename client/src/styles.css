@@ -88,3 +88,12 @@ code {
   background-color: rgb(132, 70, 112, .5);
   background-image: url('img/tags/community.png');
 }
+
+.trash-icon {
+  width: 19px;
+}
+
+/* .trash-button {
+  background-color: transparent;
+  border-color: transparent;
+} */

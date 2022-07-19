@@ -26,9 +26,9 @@ puts "Goals seeding completed"
 
 puts "Seeding tags"
 
-categoriy_types = ["farming", "love", "friendship", "bundles", "mining", "fishing", "building", "farm layout", "cooking", "foraging", "animals", "town"]
+category_types = ["farming", "love", "friendship", "bundles", "mining", "fishing", "building", "farm layout", "cooking", "foraging", "animals", "town"]
 
-categoriy_types.each do |category|
+category_types.each do |category|
   Tag.create([{category: category}])
 end
 
