@@ -6,20 +6,26 @@ import Select from 'react-select'
 
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Dropdown from 'react-bootstrap/Dropdown';
 
-import trashCan from "./img/icons/trash_can.png"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
+import star from "./img/icons/completed_star.png";
+import progressClock from "./img/icons/in_progress_clock.png";
+import unstarted from "./img/icons/unstarted_goal.png";
+import junimo from "./img/icons/junimo.png";
+import trashCan from "./img/icons/trash_can.png";
 
-  const [newGoal, setNewGoal] = useState(null);
+function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals } ) {
+
   const [categories, setCategories] = useState(null);
 
     // default user goal form values
@@ -49,44 +55,64 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
     categoryFormValues["tag_id"] = categoryInputArray
   }
  
-  function getSpecificGoal(id){
-    fetch(`/api/goals/${id}`)
-    .then((response) => {
-      if (response.ok){
-        response.json().then((this_goal) => setNewGoal(this_goal))
-        console.log(newGoal)
-      } else (console.log("This goal could not be found."))
-    })
+// need to refactor so that this is not a direct repition on the handleUserSubmit function below
+  function handleAddToMyGoals(event) {
+    // need to ensure a user cannot readd a goal that is already theirs!!!
+
+    fetch(`/api/goals/${event.target.id}`)
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((this_goal) => {
+            let thisCategoryInputArray = []
+            this_goal.tags.map((tag) => {
+              thisCategoryInputArray.push(tag.id)
+            })
+            categoryFormValues["tag_id"] = thisCategoryInputArray
+            goalFormValues["title"] = this_goal.title
+            goalFormValues["description"] = this_goal.description
+            goalFormValues["status"] = "unstarted"
+            goalFormValues["user_id"] = user.id
+          }).then(() => {
+            fetch(`/api/goals`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(goalFormValues)
+            }).then(response => {
+              if (response.ok) {
+                response.json().then((goal) => {
+                  fetch(`/api/goals/${goal.id}/goal_tags`, {
+                    // post to /api/goals/:goal_id/goal_tags the categoryFormValues
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(categoryFormValues)
+                  })
+                    .then(tagResponse => {
+                      // add new goal to the goals state, tag response is the complete goal with tags
+                      tagResponse.json().then(((tagResponse) => {
+                        setAllGoals([...allGoals, tagResponse[0]])
+                        setMyGoals([...myGoals, tagResponse[0]])
+                        toast.success(<>You added <strong>{tagResponse[0].title}</strong> to your goals!</>, {
+                          position: "top-right",
+                          autoClose: 2000,
+                          hideProgressBar: true,
+                          closeOnClick: true,
+                          pauseOnHover: false,
+                          draggable: false,
+                          progress: undefined,
+                          });
+                        // handleAlert(parseInt(event.target.id))
+                      }))
+                    })
+                })
+              } else (console.log("This goal could not be found."))
+            })
+          }
+          )
+        }
+      })
   }
 
-  function handleAddToMyGoals(event){
-    // fetch this goal from server
-    getSpecificGoal(event.target.id)
-
-    // create copied goal's object
-    let postGoal = {
-      title: newGoal.title,
-      description: newGoal.description,
-      status: "unstarted",
-      user_id: user.id,
-      // STUCK ON TAGS AND HOW TO PASS TO THE SERVER
-      tags: new Array(newGoal.tags[0])
-    }
-
-    console.log(postGoal)
-
-    // post request to add this with user_id to server
-    fetch(`/api/goals`, {
-      method: "POST",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify(postGoal)
-    }) 
-    .then((response) => {
-      console.log(response)
-    })
-  }
-
-  function handleUserSubmit(e){
+  function handleUserSubmit(e) {
     e.preventDefault()
 
     // setting user id to the current user based on login
@@ -111,7 +137,10 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
           .then(tagResponse => {
             if (tagResponse.ok) {
             // add new goal to the goals state, tag response is the complete goal with tags
-              tagResponse.json().then(((tagResponse) => setMyGoals([...goals, tagResponse[0]])))
+              tagResponse.json().then(((tagResponse) => {
+                setMyGoals([...myGoals, tagResponse[0]])
+                setAllGoals([...allGoals, tagResponse[0]])
+              }))
             } else (console.log("unsuccessful post of tags to server"))
           })
         });
@@ -121,6 +150,41 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
     handleClose()
   }
 
+  function handleGoalDelete(e) {
+    fetch(`api/goals/${e.target.id}`, 
+    { method: "DELETE" })
+    .then((response) => {
+      if (response.ok) {
+        let updatedGoals = myGoals.filter((goal) => 
+          goal.id != e.target.id
+        )
+        let updatedAllGoals = allGoals.filter((goal) => 
+          goal.id != e.target.id
+        )
+        setMyGoals(updatedGoals)
+        setAllGoals(updatedAllGoals)
+      } else (console.log("Unsuccessful deletion of this goal, please try again"))
+    })
+  }
+
+  function handleGoalEdit(e) {
+    fetch(`/api/goals/${e.target.id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "status": e.target.innerText })
+      })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((editedGoal) => {
+            let updatedGoals = myGoals.filter((goal) =>
+              goal.id != editedGoal.id)
+            setMyGoals([editedGoal, ...updatedGoals])
+          })
+        } else (console.log("Unsuccessful edit of this goal's status, please try again"))
+      })
+  }
+
   // modal functions and variables
   const [show, setShow] = useState(false);
 
@@ -128,7 +192,7 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
   const handleShow = () => setShow(true);
 
   // generates status dropdown form options
-  let status_options = ["unstarted", "in progress", "completed"]
+  let status_options = ["unstarted", "in-progress", "completed"]
   let status_dropdown = status_options.map((option) => {
     return(
       <option key={option}>{option}</option>
@@ -150,6 +214,11 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
     category_array.push({ value: `${category.id}`, label: `${category.category}` })
   })
 
+  let goals
+  if (page == "all"){
+    goals = allGoals
+  } else (goals = myGoals)
+
   // checks to see if goals exists before rendering the goal cards
   let goal_cards =  
     goals?.map((goal) => {
@@ -157,37 +226,70 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
     let goal_card_desc = goal.description.split(".").map((sentence) => {
       if (sentence.length) {
         return(
-          <Card.Text key={sentence}>
+          <Card.Text key={Math.random() * 100}>
             {sentence}
           </Card.Text>
         )
       }
     })
 
+    // track progress status drop down options with disabling if already selected for that goal
+    let statusEditButtons = status_options.map((option) => {
+      if (option == goal.status){
+        return(
+          <Dropdown.Item disabled key={option} as="button" id={goal.id} onClick={(e) => handleGoalEdit(e)}>{option}</Dropdown.Item>
+        )
+      } else return(
+        <Dropdown.Item key={option} as="button" id={goal.id} onClick={(e) => handleGoalEdit(e)}>{option}</Dropdown.Item>
+      )
+    })
+
+    // diables/enables add to my goals button based on which user is logged in 
+    let userAddButton
+    if (goal.user.name == user.name) {
+      userAddButton = true
+    } else (userAddButton = false)
+
     return(
-          <Col className="col-6">
-            <Card key={goal.id} className="mb-4">
+          <Col className="col-6" key={goal.id}>
+            <Card id={goal.id} className="mb-4">
               <Card.Header as="h5" className={goal.tags[0].category}>
                   <div className="d-inline">{goal.title}</div>
                   <span className="float-end pe-5 category-label"> {goal.tags[0].category}</span>
               </Card.Header>
               <Card.Body>
                 {goal_card_desc}
-                <div className="d-flex flex-end justify-content-between align-items-center">
-                
+                {/* renders status if in user goals */}
+                {page == "all" ? `` : 
+                  <p className={goal.status}>Status: {goal.status}</p>}
+                <div className="d-flex align-items-center">
+
                 {/* renders user's name if showing all goals, omits if only user goals */}
-                <span className="submission-details flex-end">
-                  submitted
-                  {page == "all" ? ` by ${goal.user.name}` : ``}
-                  &nbsp; {moment(goal.created_at).fromNow()}</span>
+                <span className="submission-details flex-start pe-3 me-auto">
+                  {page == "all" ? `submitted by ${goal.user.name}` : `logged`} {moment(goal.created_at).fromNow()}
+                </span>
 
                 {/* renders add to my goals button if showing all goals, omits if user goals */}
                 {page == "all" ?
-                <Button id={goal.id} variant="primary" className="float-end" onClick={(event) => handleAddToMyGoals(event)}>add this to my goal</Button> : 
-                <Button size="sm" variant="outline-secondary" className="trash-button">
-                  <img src={trashCan} className="trash-icon" alt="trash can" />
-                  Delete
-                </Button>
+                <>
+                  <Button disabled={userAddButton} id={goal.id} size="sm" variant="secondary" className="float-end" onClick={(event) => handleAddToMyGoals(event)}>Copy to my goals</Button> 
+                </> : 
+                <>
+                  <Dropdown>
+                    <Dropdown.Toggle size="sm" variant="outline-secondary" className="junimo-button" id={goal.id}>
+                      <img src={junimo} className="junimo-icon" alt="junimo" />
+                      Set Progress
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      {statusEditButtons}
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                  <Button id={goal.id} size="sm" variant="outline-secondary" className="trash-button ms-1" onClick={(e) => handleGoalDelete(e)}>
+                    <img src={trashCan} className="trash-icon" alt="trash can" />
+                    Delete
+                  </Button>
+                </>
                 }
 
                 </div>
@@ -198,7 +300,8 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
   })
 
   return (
-    <div >
+    <div>
+      <ToastContainer position="top-right" autoClose={2000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss={false} draggable={false} pauseOnHover={false}/>
       <Container>
         <Row className="align-items-center">
 
@@ -233,22 +336,12 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
                       </Form.Floating>
                     </Form.Group>
 
-                    {/* <Form.Group className="mb-3" controlId="title">
-                      <Form.Label>Title</Form.Label>
-                      <Form.Control type="title" onChange={(e) => handleUserGoalForm(e)} autoFocus />
-                    </Form.Group> */}
-
                     <Form.Group className="mb-3" controlId="description">
                       <Form.Floating>
                         <Form.Control placeholder="Description" type="description" as="textarea" style={{ height: '120px' }} onChange={(e) => handleUserGoalForm(e)} />
                         <label htmlFor="floatingInputCustom">Description</label>
                       </Form.Floating>
                     </Form.Group>
-
-                    {/* <Form.Group className="mb-3" controlId="description">
-                      <Form.Label>Description</Form.Label>
-                      <Form.Control as="textarea" rows={3} placeholder="Describe the steps to reach your goal" onChange={(e) => handleUserGoalForm(e)}/>
-                    </Form.Group> */}
 
                     <Form.Group className="mb-3">
                       <FloatingLabel label="Status" controlId="status">
@@ -258,14 +351,6 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
                         </Form.Select>
                       </FloatingLabel>
                     </Form.Group>
-
-                    {/* <Form.Group className="mb-3" controlId="status">
-                      <Form.Label>Current Status</Form.Label>
-                      <Form.Select aria-label="current_status" onChange={(e) => handleUserGoalForm(e)}>
-                        <option>Select a status</option>
-                          {status_dropdown}
-                      </Form.Select>
-                    </Form.Group> */}
 
                   <Form.Group className="mb-3">
                     <Select placeholder="Select a category" closeMenuOnSelect={false} isMulti options={category_array} onChange={(e) => handleUserCategoryForm(e)}/>
@@ -280,7 +365,7 @@ function AllGoals( { user, page, goals, setAllGoals, setMyGoals } ) {
               </Modal>
 
           </Col> : 
-          <></>}
+          <></> }
           
         </Row>
 

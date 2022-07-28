@@ -10,7 +10,7 @@ puts "User seeding completed"
 
 puts "Seeding goals"
 
-status_options = ["unstarted", "in progress", "completed"]
+status_options = ["unstarted", "in-progress", "completed"]
 user_ids = User.all.ids
 
 Goal.create([

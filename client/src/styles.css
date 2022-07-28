@@ -90,10 +90,39 @@ code {
 }
 
 .trash-icon {
-  width: 19px;
+  padding-bottom: 1px;
+  padding-right: 3px;
+  width: 22px;
 }
 
-/* .trash-button {
-  background-color: transparent;
-  border-color: transparent;
+.junimo-icon {
+  padding-right: 4px;
+  padding-bottom: 1px;
+  width: 24px;
+}
+
+.welcome-back-text {
+  color: gray;
+  opacity: 0.5;
+}
+
+
+/* add icons for goal status */
+
+/* .goal-status {
+  background-position: 98% 50%;
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+} */
+
+/* .goal-status.unstarted{
+  background-image: url('img/icons/unstarted_goal.png');
+}
+
+.goal-status.in-progress{
+  background-image: url('img/icons/unstarted_goal.png');
+}
+
+.goal-status.completed{
+  background-image: url('img/icons/unstarted_goal.png');
 } */

@@ -1,22 +1,27 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import {LinkContainer} from 'react-router-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 
 function Navigation({ user, setUser }) {
+
+  const navigate = useNavigate();
 
   function handleLogout() {
     fetch("/logout", 
     { method: "DELETE" })
     .then((response) => {
       if (response.ok) {
+        navigate("../login-page", { replace: true });
         setUser(null);
       }
-    });
+    })
   }
 
   return (
@@ -31,13 +36,17 @@ function Navigation({ user, setUser }) {
             
               <Nav className="me-auto">
                 <LinkContainer to="/all-goals">
-                  <Nav.Link>Browse Goals</Nav.Link>
+                  {/* conditionally enable navbar link if user is logged in */}
+                  { user ?  <Nav.Link>Browse Goals</Nav.Link> :  <Nav.Link disabled>Browse Goals</Nav.Link> }
                 </LinkContainer>
                 <LinkContainer to="/my-goals">
-                  <Nav.Link>My Goals</Nav.Link>
-                </LinkContainer>
+                  {/* conditionally enable navbar link if user is logged in */}
+                  { user ? <Nav.Link>My Goals</Nav.Link> : <Nav.Link disabled>My Goals</Nav.Link> }
+                </LinkContainer> 
+
                 <LinkContainer to="/my-account">
-                  <Nav.Link>My Account</Nav.Link>
+                  {/* conditionally enable navbar link if user is logged in */}
+                  { user ? <Nav.Link>My Account</Nav.Link> : <Nav.Link disabled>My Account</Nav.Link> }
                 </LinkContainer>
               </Nav>
           </Col>

@@ -1,34 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
-import { Redirect } from 'react-router-dom';
 
-function LogInForm({ setUser }) {
+function LogInForm({ setUser, user }) {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const [formError, setFormError] = useState(false);
+  const navigate = useNavigate();
 
-  function handleLogIn(e){
+  // function which allows user to be redirected once successful login occurs
+  useEffect(() => {
+    if (user) {
+      navigate("../my-goals", { replace: true });
+    }}, [user])
+ 
+  function logInUser(e) {
     e.preventDefault()
-      
-      fetch("/login", {
-        method: "POST",
-        headers: {"Content-Type" : "application/json"},
-        body: JSON.stringify({ username, password })
-      })
+
+    fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    })
       .then(response => {
         if (response.ok) {
           response.json().then((user) => setUser(user));
-          // redirect on login needs to be built out
         } else {
           response.json().then((err) => setErrors(err.errors))
-          .then(() => setFormError(true))
-        }})
-
+            .then(() => setFormError(true))
+        }
+      })
   }
 
   return (
@@ -40,7 +46,7 @@ function LogInForm({ setUser }) {
           Error: {errors}
       </Alert>
 
-      <Form onSubmit={handleLogIn}>
+      <Form onSubmit={logInUser}>
         <Form.Group className="mb-3" controlId="formUsername">
           {/* <Form.Label>username</Form.Label> */}
           <Form.Control type="username" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)}/>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 // import referenced components
-import TestPage from './test';
+import MyAccount from './account';
 import Home from './home';
 import Navigation from './navigation';
 import LogInForm from "./log-in-form";
@@ -53,10 +53,10 @@ function App() {
       <Routes>
         <Route exact path="/" element={ <Home user={user}/> } />
         <Route path="/signup-page" element={ <SignUpForm setUser={setUser} /> } />
-        <Route path="/login-page" element={ <LogInForm setUser={setUser} /> } />
-        <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} goals={allGoals} setAllGoals={setAllGoals} /> } />
-        <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} goals={myGoals} setMyGoals={setMyGoals}/> } />
-        <Route path="/my-account" element={ <TestPage /> } />
+        <Route path="/login-page" element={ <LogInForm setUser={setUser} user={user} /> } />
+        <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} myGoals={myGoals} allGoals={allGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} /> } />
+        <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} allGoals={allGoals} myGoals={myGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals}/> } />
+        <Route path="/my-account" element={ <MyAccount user={user} /> } />
       </Routes>
     </div>
   );

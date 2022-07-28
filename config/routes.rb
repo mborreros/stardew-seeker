@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   scope "/api" do
     #all backend routes go here
     resources :users, only: [:index, :show]
-    resources :goals, only: [:index, :show, :destroy]
+    resources :goals, only: [:index, :show, :destroy, :update]
 
     resources :goals, only: [:create] do
       resources :goal_tags, only: [:create]
