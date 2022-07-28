@@ -56,7 +56,7 @@ function App() {
         <Route path="/login-page" element={ <LogInForm setUser={setUser} user={user} /> } />
         <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} myGoals={myGoals} allGoals={allGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} /> } />
         <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} allGoals={allGoals} myGoals={myGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals}/> } />
-        <Route path="/my-account" element={ <MyAccount user={user} /> } />
+        <Route path="/my-account" element={ <MyAccount user={user} myGoals={myGoals}/> } />
       </Routes>
     </div>
   );

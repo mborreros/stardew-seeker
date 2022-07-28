@@ -106,6 +106,26 @@ code {
   opacity: 0.5;
 }
 
+.card-header.act-submission {
+  background-color: rgb(241, 244, 249);
+  background-image: url('img/icons/unstarted_goal.png');
+}
+
+.card-header.act-compare {
+  background-color: rgb(241, 244, 249);
+  background-image: url('img/icons/completed_star.png');
+}
+
+.card-header.act-details {
+  background-color: rgb(241, 244, 249);
+  background-image: url('img/icons/in_progress_clock.png');
+}
+
+.card-header.act-goal-stats {
+  background-color: rgb(241, 244, 249);
+  background-image: url('img/icons/game_controler.png');
+}
+
 
 /* add icons for goal status */
 
