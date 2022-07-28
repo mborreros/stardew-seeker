@@ -107,7 +107,7 @@ function MyAccount({ user, myGoals }) {
                 <span className="float-end pe-5 act-goals-stats-label"></span>
               </Card.Header>
                   <>
-                    <Chart chartType="ColumnChart" width="100%" height="400px" data={data} />
+                    <Chart chartType="ColumnChart" width="100%" height="400px" data={data} options={{ legend: 'none'}}/>
                   </>
             </Card>
           </Col>

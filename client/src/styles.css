@@ -125,24 +125,3 @@ code {
   background-color: rgb(241, 244, 249);
   background-image: url('img/icons/game_controler.png');
 }
-
-
-/* add icons for goal status */
-
-/* .goal-status {
-  background-position: 98% 50%;
-  background-repeat: no-repeat;
-  background-size: 25px 25px;
-} */
-
-/* .goal-status.unstarted{
-  background-image: url('img/icons/unstarted_goal.png');
-}
-
-.goal-status.in-progress{
-  background-image: url('img/icons/unstarted_goal.png');
-}
-
-.goal-status.completed{
-  background-image: url('img/icons/unstarted_goal.png');
-} */

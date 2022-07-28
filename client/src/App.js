@@ -14,6 +14,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [allGoals, setAllGoals] = useState(null);
   const [myGoals, setMyGoals] = useState(null);
+  const [categories, setCategories] = useState(null);
 
   // auto login
   useEffect(() => {
@@ -36,6 +37,16 @@ function App() {
     })
   }, [])
 
+  // fetching category/tag options
+    useEffect(() => {
+      fetch(`/api/tags`)
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((tags) => setCategories(tags))
+        } else (console.log("Tags were not retrieved properly from the server, please try again"))
+      })
+    }, [])
+
   // fetching user specific goals whenever user state changes
   useEffect(() => {
     if (user) {
@@ -51,11 +62,11 @@ function App() {
     <div>
       <Navigation user={user} setUser={setUser}/>
       <Routes>
-        <Route exact path="/" element={ <Home user={user}/> } />
+        <Route exact path="/" element={ <Home user={user} setUser={setUser} allGoals={allGoals} categories={categories}/> } />
         <Route path="/signup-page" element={ <SignUpForm setUser={setUser} /> } />
         <Route path="/login-page" element={ <LogInForm setUser={setUser} user={user} /> } />
         <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} myGoals={myGoals} allGoals={allGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} /> } />
-        <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} allGoals={allGoals} myGoals={myGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals}/> } />
+        <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} allGoals={allGoals} myGoals={myGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} categories={categories}/> } />
         <Route path="/my-account" element={ <MyAccount user={user} myGoals={myGoals}/> } />
       </Routes>
     </div>

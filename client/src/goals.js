@@ -9,7 +9,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
@@ -18,15 +17,10 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import star from "./img/icons/completed_star.png";
-import progressClock from "./img/icons/in_progress_clock.png";
-import unstarted from "./img/icons/unstarted_goal.png";
 import junimo from "./img/icons/junimo.png";
 import trashCan from "./img/icons/trash_can.png";
 
-function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals } ) {
-
-  const [categories, setCategories] = useState(null);
+function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, categories } ) {
 
     // default user goal form values
     let defaultGoalFormValues = {
@@ -199,16 +193,6 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals } ) 
     )
   })
 
-  // generates category/tag dropdown form options
-  useEffect(() => {
-    fetch(`/api/tags`)
-    .then((response) => {
-      if (response.ok) {
-        response.json().then((tags) => setCategories(tags))
-      } else (console.log("Tags were not retrieved properly from the server, please try again"))
-    })
-  }, [])
-
   let category_array = []
   categories?.map((category) => {
     category_array.push({ value: `${category.id}`, label: `${category.category}` })
@@ -353,7 +337,7 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals } ) 
                     </Form.Group>
 
                   <Form.Group className="mb-3">
-                    <Select placeholder="Select a category" closeMenuOnSelect={false} isMulti options={category_array} onChange={(e) => handleUserCategoryForm(e)}/>
+                    <Select placeholder="Select a category, first selected will be the main category" closeMenuOnSelect={false} isMulti options={category_array} onChange={(e) => handleUserCategoryForm(e)}/>
                   </Form.Group>
 
                   </Form>
