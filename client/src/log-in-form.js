@@ -4,6 +4,9 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
 
 function LogInForm({ setUser, user }) {
 
@@ -38,29 +41,36 @@ function LogInForm({ setUser, user }) {
   }
 
   return (
-    <div>
-      <Container className="mt-4">
-      <p> log in form </p>
+    <div className="login-background">
+      <Container>
+        <div className="login-form">
+        <Row className="justify-content-center">
+          <Card style={{ width: '40rem' }} className="px-5">
+            <Card.Title as="h1" className="my-5">Login</Card.Title>
 
-      <Alert show={formError} variant="danger" onClose={() => setFormError(false)} dismissible>
-          Error: {errors}
-      </Alert>
+            <Alert show={formError} variant="danger" onClose={() => setFormError(false)} dismissible>
+                Error: {errors}
+            </Alert>
 
-      <Form onSubmit={logInUser}>
-        <Form.Group className="mb-3" controlId="formUsername">
-          <Form.Control type="username" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-        </Form.Group>
+            <Form onSubmit={logInUser}>
+              <Form.Group className="mb-3" controlId="formUsername">
+                <Form.Label>Username</Form.Label>
+                <Form.Control type="username" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+              </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formPassword">
-          {/* <Form.Label>password</Form.Label> */}
-          <Form.Control type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-        </Form.Group>
+              <Form.Group className="mb-3" controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+              </Form.Group>
 
-        <Button variant="primary" type="submit">
-          log in
-        </Button>
+              <Button variant="primary" type="submit" className="my-5 float-end">
+                Login
+              </Button>
 
-      </Form>
+            </Form>
+          </Card>
+        </Row>
+        </div>
       </Container>
     </div>
   );

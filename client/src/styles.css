@@ -140,3 +140,26 @@ code {
   color: gray;
   opacity: 0.8;
 }
+
+.start-page {
+  background-image: url('img/backgrounds/moon-sky.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 635px;
+}
+
+.start-page-text {
+  padding-top: 15px;
+  padding-left: 25px;
+  color: #d2d0d0;
+}
+
+.login-background {
+  background-color: rgb(42, 32, 107, .75);
+  background-size: cover;
+  height: 635px;
+}
+
+.login-form {
+  padding-top: 100px;
+}

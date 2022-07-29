@@ -2,6 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import { Link } from "react-router-dom";
 
 import { Chart } from "react-google-charts";
 
@@ -38,24 +39,20 @@ function Home( { user, setUser, allGoals, categories }) {
   };
 
   return (
-    <Container>
+    <>
       {!user ? 
-      <div className='mt-5'>
-        <Row className='my-5 mx-5'>
-          <h1> Farm smarter,</h1>
-          <h1 className='mx-4'>save the Valley faster!</h1>
-        </Row>
-        <Row className=' mt-5 d-flex'>
-          <Col className='d-flex justify-content-end'>
-            <Button variant="outline-secondary">Login</Button>
-          </Col>
-          <Col>
-            <Button variant="secondary">Sign Up</Button> 
-          </Col>
-        </Row>
+      <div className='start-page'>
+      <Container>
+        <div className='start-page-text'>
+          <Row className='my-5'>
+            <h1> Farm smarter,</h1>
+            <h1 className='mx-4'>save the Valley faster!</h1>
+          </Row>
+        </div>
+      </Container>
       </div>
       :
-      <>
+      <Container>
         <Row className="home-page-welcome">
           {/* non breaking spaces to accomodate stardrop icon in title */}
           <h1 className='my-5'>&nbsp;&nbsp;&nbsp;&nbsp;Welcome {user.name}!</h1>
@@ -77,9 +74,9 @@ function Home( { user, setUser, allGoals, categories }) {
             <Chart chartType="PieChart" data={data} width={"100%"} height={"375px"} />
           </Col>
         </Row>
-      </>
+      </Container>
     }
-    </Container>
+    </>
   )
 }
 
