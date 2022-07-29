@@ -181,7 +181,6 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
 
   // modal functions and variables
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -193,11 +192,13 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
     )
   })
 
+  // generates category dropdown options
   let category_array = []
   categories?.map((category) => {
     category_array.push({ value: `${category.id}`, label: `${category.category}` })
   })
 
+  // determines which goal prop the page should display based on what page the user has navigated to 
   let goals
   if (page == "all"){
     goals = allGoals

@@ -125,3 +125,18 @@ code {
   background-color: rgb(241, 244, 249);
   background-image: url('img/icons/game_controler.png');
 }
+
+.row {
+  background-position: 1% 48%;
+  background-repeat: no-repeat;
+  background-size: 30px 30px;
+}
+
+.row.home-page-welcome {
+  background-image: url('img/icons/stardrop.png');
+}
+
+.pie-chart-text {
+  color: gray;
+  opacity: 0.8;
+}
