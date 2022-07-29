@@ -61,7 +61,7 @@ function SignUpForm({ setUser }) {
                   <Form.Label>Password</Form.Label>
                   <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 </Form.Group>
-
+                
                 <span>Already a user? </span><Link to="/login-page"> Login</Link>
                 <Button variant="primary" type="submit" className="my-5 float-end"> 
                     Sign Up

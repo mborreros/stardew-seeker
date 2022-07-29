@@ -65,12 +65,10 @@ function LogInForm({ setUser, user }) {
                 <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
               </Form.Group>
 
-            <Col>
               <span>Don't have an account? </span><Link to="/signup-page"> Sign Up</Link>
               <Button variant="primary" type="submit" className="my-5 float-end">
                 Login
               </Button>
-            </Col>
             </Form>
           </Card>
         </Row>

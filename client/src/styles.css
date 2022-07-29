@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 
 body {
   margin: 0;
@@ -152,14 +154,42 @@ code {
   padding-top: 15px;
   padding-left: 25px;
   color: #d2d0d0;
+  position: absolute;
+  left: 2.5rem;
+  top: 25%;
+  opacity: 1;
+  animation-name: topFadeOut;
+  animation-duration: 1.5s;
+}
+
+.start-page-text h1 {
+  font-family: 'VT323';
+  font-size: 4rem;
 }
 
 .login-background {
-  background-color: rgb(42, 32, 107, .75);
+  /* background-color: rgb(42, 32, 107, .75); */
+  background-image: linear-gradient(rgb(11, 9, 18), rgb(30, 24, 74), rgb(54, 50, 112));
   background-size: cover;
   height: 635px;
 }
 
 .login-form {
   padding-top: 100px;
+}
+
+
+
+@keyframes topFadeOut {
+  0% {
+    position: absolute;
+    top: 0rem;
+    opacity: 0;
+  }
+
+  100% {
+    position: absolute;
+    top: 25%;
+    opacity: 1;
+  }
 }
