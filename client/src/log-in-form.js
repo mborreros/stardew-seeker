@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 
 function LogInForm({ setUser, user }) {
@@ -52,15 +51,15 @@ function LogInForm({ setUser, user }) {
                 Error: {errors}
             </Alert>
 
-            <Form onSubmit={logInUser}>
+            <Form onSubmit={logInUser} autoComplete="off">
               <Form.Group className="mb-3" controlId="formUsername">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="username" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                <Form.Control type="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
               </Form.Group>
 
               <Button variant="primary" type="submit" className="my-5 float-end">

@@ -35,7 +35,7 @@ function App() {
         response.json().then((goals) => setAllGoals(goals))
       } else (console.log("Goals were not retrieved properly from the server, please try again"))
     })
-  }, [])
+  }, [user])
 
   // fetching category/tag options
     useEffect(() => {
