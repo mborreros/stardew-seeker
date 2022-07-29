@@ -6,6 +6,10 @@ import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 
+import { Link } from "react-router-dom";
+
+import LogInForm from "./log-in-form";
+
 function SignUpForm({ setUser }) {
 
   const [username, setUsername] = useState("");
@@ -58,9 +62,10 @@ function SignUpForm({ setUser }) {
                   <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 </Form.Group>
 
-                    <Button variant="primary" type="submit" className="my-5 float-end"> 
-                        Sign Up
-                    </Button>
+                <span>Already a user? </span><Link to="/login-page"> Login</Link>
+                <Button variant="primary" type="submit" className="my-5 float-end"> 
+                    Sign Up
+                </Button>
               </Form>
           </Card>
         </Row>

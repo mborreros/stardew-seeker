@@ -5,7 +5,10 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
+import Col from'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+
+import { Link } from "react-router-dom";
 
 function LogInForm({ setUser, user }) {
 
@@ -62,10 +65,12 @@ function LogInForm({ setUser, user }) {
                 <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
               </Form.Group>
 
+            <Col>
+              <span>Don't have an account? </span><Link to="/signup-page"> Sign Up</Link>
               <Button variant="primary" type="submit" className="my-5 float-end">
                 Login
               </Button>
-
+            </Col>
             </Form>
           </Card>
         </Row>
