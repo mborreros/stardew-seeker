@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :name, :image, :bio, :created_at
+  attributes :id, :username, :name, :image, :bio, :created_at
 
   has_many :goals
 

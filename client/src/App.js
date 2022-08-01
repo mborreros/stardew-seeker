@@ -5,8 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import MyAccount from './account';
 import Home from './home';
 import Navigation from './navigation';
-import LogInForm from "./log-in-form";
-import SignUpForm from "./sign-up-form";
+import UserAuthForm from "./user-auth-form";
 import AllGoals from "./goals";
 
 function App() {
@@ -63,8 +62,8 @@ function App() {
       <Navigation user={user} setUser={setUser}/>
       <Routes>
         <Route exact path="/" element={ <Home user={user} setUser={setUser} allGoals={allGoals} categories={categories}/> } />
-        <Route path="/signup-page" element={ <SignUpForm setUser={setUser} /> } />
-        <Route path="/login-page" element={ <LogInForm setUser={setUser} user={user} /> } />
+        <Route path="/signup-page" element={ <UserAuthForm setUser={setUser} page={"signup"}/> } />
+        <Route path="/login-page" element={ <UserAuthForm setUser={setUser} user={user} page={"login"}/> } />
         <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} myGoals={myGoals} allGoals={allGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} /> } />
         <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} allGoals={allGoals} myGoals={myGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} categories={categories}/> } />
         <Route path="/my-account" element={ <MyAccount user={user} myGoals={myGoals}/> } />

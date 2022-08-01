@@ -168,7 +168,6 @@ code {
 }
 
 .login-background {
-  /* background-color: rgb(42, 32, 107, .75); */
   background-image: linear-gradient(rgb(11, 9, 18), rgb(30, 24, 74), rgb(54, 50, 112));
   background-size: cover;
   height: 635px;

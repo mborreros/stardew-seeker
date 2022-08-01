@@ -1,12 +1,8 @@
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
 
 import { Chart } from "react-google-charts";
-
-import LogInForm from "./log-in-form";
-import SignUpForm from "./sign-up-form";
 
 function Home( { user, setUser, allGoals, categories }) {
 

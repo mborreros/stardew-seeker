@@ -231,7 +231,7 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
 
     // diables/enables add to my goals button based on which user is logged in 
     let userAddButton
-    if (goal.user.name == user.name) {
+    if (goal.user.name == user?.name) {
       userAddButton = true
     } else (userAddButton = false)
 

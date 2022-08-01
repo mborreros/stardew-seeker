@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
+
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
 
-  skip_before_action :authorized, only: :show
+  skip_before_action :authorized, only: [:create]
 
   def index
     users = User.all
@@ -26,7 +27,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :password)
+    params.permit(:username, :password, :name)
   end
 
   def render_unprocessable_entity_response(invalid)

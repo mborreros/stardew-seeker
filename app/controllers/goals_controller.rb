@@ -1,8 +1,7 @@
 class GoalsController < ApplicationController
 
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
-
-  skip_before_action :authorized, only: [:destroy]
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
 
   def index
     goals = Goal.all
@@ -10,12 +9,8 @@ class GoalsController < ApplicationController
   end
 
   def show
-    this_goal = Goal.find_by(id: params[:id])
-    if this_goal
-      render json: this_goal, status: :ok
-    else
-      render json: {error: "Goal not found"}, status: :not_found
-    end
+    this_goal = find_goal 
+    render json: this_goal, status: :ok
   end
 
   def create
@@ -25,31 +20,23 @@ class GoalsController < ApplicationController
 
   def user_goals
     user_goals = Goal.where(user_id: params[:id])
-    if user_goals
+    if user_goals.length >= 1
       render json: user_goals, status: :ok
     else 
-      render json: {error: "No goals found for this user"}, status: :not_found
+      render_not_found_response
     end
   end
 
   def update
-    goal = Goal.find_by(id: params[:id])
-    if goal
-      goal.update(goal_params)
-      render json: goal, status: :ok
-    else 
-      render json: {error: "Goal not found, cannot update this goal"}, stauts: :not_found
-    end
+    goal = find_goal
+    goal.update(goal_params)
+    render json: goal, status: :ok
   end
 
   def destroy
-    goal = Goal.find_by(id: params[:id])
-    if goal
-      goal.destroy
-      head :no_content
-    else 
-      render json: {errors: "Goal not found"}, status: :not_found
-    end
+    goal = find_goal
+    goal.destroy
+    head :no_content
   end
 
   private
@@ -60,6 +47,14 @@ class GoalsController < ApplicationController
 
   def render_unprocessable_entity_response(invalid)
     render json: {errors: invalid.record.errors.full_messages}, status: :unprocessable_entity
+  end
+
+  def render_not_found_response()
+    render json: {errors: "Goal(s) not found."}, status: :not_found
+  end
+
+  def find_goal
+    Goal.find(params[:id])
   end
 
 end
