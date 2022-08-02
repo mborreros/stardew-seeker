@@ -336,9 +336,16 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                         </Form.Select>
                       </FloatingLabel>
                     </Form.Group>
-
+                    {/* first selected will be the main category */}
                   <Form.Group className="mb-3">
-                    <Select placeholder="Select a category, first selected will be the main category" closeMenuOnSelect={false} isMulti options={category_array} onChange={(e) => handleUserCategoryForm(e)}/>
+                    <label id="category-selector-label" for="category-selector-inp">Categories</label>
+                    <Select className="category-selector-container" classNamePrefix="category-selector" 
+                    placeholder="First selection will be the main category" 
+                    closeMenuOnSelect={false} 
+                    isMulti 
+                    inputId="category-selector-inp"
+                    options={category_array} 
+                    onChange={(e) => handleUserCategoryForm(e)}/>
                   </Form.Group>
 
                   </Form>

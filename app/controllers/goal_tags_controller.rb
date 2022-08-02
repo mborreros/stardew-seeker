@@ -17,15 +17,11 @@ class GoalTagsController < ApplicationController
   end
 
   def create
-    if params[:tag_id].length()
-      params[:tag_id].each do |id|
-        new_goal_tag = GoalTag.create!(goal_id: params[:goal_id], tag_id: id)
-      end
-      this_goal = Goal.where(id: params[:goal_id])
-      render json: this_goal, status: :created
-    else 
-      render json: {error: "There are no goal tags to create, this goal has been deleted to maintain the integrity of the server!"}, status: :unprocessable_entity
+    params[:tag_id].each do |id|
+      new_goal_tag = GoalTag.create!(goal_id: params[:goal_id], tag_id: id)
     end
+    this_goal = Goal.where(id: params[:goal_id])
+    render json: this_goal, status: :created
   end
 
   private
