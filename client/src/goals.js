@@ -20,14 +20,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import junimo from "./img/icons/junimo.png";
 import trashCan from "./img/icons/trash_can.png";
 
-function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, categories } ) {
+function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, categories, copiedGoals } ) {
 
     // default user goal form values
     let defaultGoalFormValues = {
       "title": "",
       "description": "",
       "status": "",
-      "user_id": 0
+      "user_id": 0,
+      "copied_from": null
     }
     let defaultCategoryFormValue = {
       "tag_id": []
@@ -66,6 +67,7 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
             goalFormValues["description"] = this_goal.description
             goalFormValues["status"] = "unstarted"
             goalFormValues["user_id"] = user.id
+            goalFormValues["copied_from"] = this_goal.id
           }).then(() => {
             fetch(`/api/goals`, {
               method: "POST",
@@ -84,7 +86,9 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                       // add new goal to the goals state, tag response is the complete goal with tags
                       tagResponse.json().then(((tagResponse) => {
                         setAllGoals([...allGoals, tagResponse[0]])
-                        setMyGoals([...myGoals, tagResponse[0]])
+                      // resetting myGoals state while maintaining previously loaded data, only if that data exists
+                        {myGoals ? setMyGoals([...myGoals, tagResponse[0]]) : setMyGoals([tagResponse[0]])}
+                        // setMyGoals([...myGoals, tagResponse[0]])
                         toast.success(<>You added <strong>{tagResponse[0].title}</strong> to your goals!</>, {
                           position: "top-right",
                           autoClose: 2000,
@@ -94,7 +98,6 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                           draggable: false,
                           progress: undefined,
                           });
-                        // handleAlert(parseInt(event.target.id))
                       }))
                     })
                 })
@@ -231,6 +234,7 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
 
     // diables/enables add to my goals button based on which user is logged in 
     let userAddButton
+    // console.log(userCopies)
     if (goal.user.name == user?.name) {
       userAddButton = true
     } else (userAddButton = false)
@@ -257,7 +261,7 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                 {/* renders add to my goals button if showing all goals, omits if user goals */}
                 {page == "all" ?
                 <>
-                  <Button disabled={userAddButton} id={goal.id} size="sm" variant="secondary" className="float-end" onClick={(event) => handleAddToMyGoals(event)}>Copy to my goals</Button> 
+                  <Button disabled={userAddButton || copiedGoals.includes(goal.id)} id={goal.id} size="sm" variant="secondary" className="float-end" onClick={(event) => handleAddToMyGoals(event)}>Copy to my goals</Button> 
                 </> : 
                 <>
                   <Dropdown>
@@ -362,7 +366,8 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
         </Row>
 
         <Row>
-          {goal_cards}
+        {/* conditionally renders some text if user has not yet submitted any goals */}
+          {goal_cards ? goal_cards : <p>Oops - looks like you don't have any goals yet!</p>}
         </Row>
 
       </Container>

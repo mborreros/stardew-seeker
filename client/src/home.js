@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card'
 
 import { Chart } from "react-google-charts";
 
@@ -8,6 +10,7 @@ function Home( { user, setUser, allGoals, categories }) {
 
   // initial array to categorize data for google pie chart
     let data = [ ["Category", "Number of Goals"]];
+    
   // array to create list of categories for home page text
     let categoryText = []
     let valueCount = {}
@@ -66,7 +69,12 @@ function Home( { user, setUser, allGoals, categories }) {
             </div>
           </Col>
           <Col className='col-7'>
-            <Chart chartType="PieChart" data={data} width={"100%"} height={"375px"} />
+              <Card className='goals-graph-card'>
+              <Card.Header as="h5" className='goals-graph'>
+                <div className="d-inline">Stardew Seeker Community's Current Goals</div>
+              </Card.Header>
+                <Chart chartType="PieChart" data={data} width={"100%"} height={"300px"} />
+              </Card>
           </Col>
         </Row>
       </Container>

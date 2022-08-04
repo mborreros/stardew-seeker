@@ -42,7 +42,7 @@ class GoalsController < ApplicationController
   private
 
   def goal_params
-    params.permit(:title, :description, :status, :user_id)
+    params.permit(:title, :description, :status, :user_id, :copied_from)
   end
 
   def render_unprocessable_entity_response(invalid)

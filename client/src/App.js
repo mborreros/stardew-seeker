@@ -14,6 +14,7 @@ function App() {
   const [allGoals, setAllGoals] = useState(null);
   const [myGoals, setMyGoals] = useState(null);
   const [categories, setCategories] = useState(null);
+  const [copiedGoals, setCopiedGoals] = useState(null);
 
   // auto login
   useEffect(() => {
@@ -57,6 +58,15 @@ function App() {
       })
     }}, [user]) 
 
+  // creating array of origianl goal id's for button toggling on all goals page
+    let userCopies = []
+    useEffect(() => {
+      myGoals?.map((userGoal) => {
+        userCopies.push(userGoal.copied_from)
+      })
+      setCopiedGoals(userCopies)
+    }, [myGoals])
+
   return (
     <div>
       <Navigation user={user} setUser={setUser}/>
@@ -64,7 +74,7 @@ function App() {
         <Route exact path="/" element={ <Home user={user} setUser={setUser} allGoals={allGoals} categories={categories}/> } />
         <Route path="/signup-page" element={ <UserAuthForm setUser={setUser} page={"signup"}/> } />
         <Route path="/login-page" element={ <UserAuthForm setUser={setUser} user={user} page={"login"}/> } />
-        <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} myGoals={myGoals} allGoals={allGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} /> } />
+        <Route path="/all-goals" element={ <AllGoals user={user} page={"all"} myGoals={myGoals} allGoals={allGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} copiedGoals={copiedGoals} /> } />
         <Route path="/my-goals" element={ <AllGoals user={user} page={"user"} allGoals={allGoals} myGoals={myGoals} setAllGoals={setAllGoals} setMyGoals={setMyGoals} categories={categories}/> } />
         <Route path="/my-account" element={ <MyAccount user={user} myGoals={myGoals}/> } />
       </Routes>

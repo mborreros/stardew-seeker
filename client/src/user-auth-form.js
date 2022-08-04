@@ -9,6 +9,9 @@ import Card from 'react-bootstrap/Card';
 
 import { Link } from "react-router-dom";
 
+import ancientFruit from "./img/icons/ancient_fruit.png";
+import parsnip from "./img/icons/parsnip.png";
+
 function UserAuthForm({ setUser, user, page }) {
 
   const [username, setUsername] = useState("");
@@ -111,9 +114,15 @@ function UserAuthForm({ setUser, user, page }) {
                 <span>Don't have an account? </span>
                 <Link to="/signup-page">Sign Up</Link> </>}
   
-              <Button variant="primary" type="submit" className="my-5 float-end">
-                {page == "signup" ? "Sign Up" : "Login"}
-              </Button>
+              {/* <div className={page == "signup" ? "signup-button" : "login-button"}> */}
+                <Button variant="primary" type="submit" className="my-5 float-end">
+                {page == "signup" ? 
+                <img src={parsnip} className="parsnip-icon" alt="parsnip" /> : 
+                <img src={ancientFruit} className="ancient-fruit-icon" alt="stardrop" />}
+            
+                  {page == "signup" ? "Sign Up" : "Login"}
+                </Button>
+              {/* </div> */}
             </Form>
           </Card>
         </Row>

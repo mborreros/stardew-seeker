@@ -103,6 +103,18 @@ code {
   width: 24px;
 }
 
+.ancient-fruit-icon {
+  padding-right: 8px;
+  padding-bottom: 3px;
+  width: 28px;
+}
+
+.parsnip-icon {
+  padding-right: 5px;
+  padding-bottom: 2px;
+  width: 26px;
+}
+
 .welcome-back-text {
   color: gray;
   opacity: 0.5;
@@ -221,6 +233,15 @@ code {
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 
+}
+
+.goals-graph {
+  color: gray;
+}
+
+.card-header.goals-graph {
+  background-color: rgb(241, 244, 249);
+  background-image: url('img/icons/gem.png');
 }
 
 
