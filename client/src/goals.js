@@ -22,73 +22,117 @@ import trashCan from "./img/icons/trash_can.png";
 
 function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, categories, copiedGoals } ) {
 
-    // default user goal form values
-    let defaultGoalFormValues = {
-      "title": "",
-      "description": "",
-      "status": "",
-      "user_id": 0,
-      "copied_from": null
-    }
-    let defaultCategoryFormValue = {
-      "tag_id": []
-    }
+  // default user goal form values
+  let defaultGoalFormValues = {
+    "title": "",
+    "description": "",
+    "status": "",
+    "user_id": 0,
+    "copied_from": null
+  }
+  let defaultCategoryFormValue = {
+    "tag_id": []
+  }
 
   // add user goal form state variable
   const [goalFormValues, setGoalFormValues] = useState(defaultGoalFormValues);
   const [categoryFormValues, setCategoryFormValues] = useState(defaultCategoryFormValue);
+  const [hasCategory, setHasCategory] = useState('');
+  const [validated, setValidated] = useState(false);
+  const [withinForm, setWithinForm] = useState(false);
 
-  function handleUserGoalForm(e){
+  function handleUserGoalForm(e) {
     goalFormValues[e.target.id] = e.target.value;
   }
 
-  function handleUserCategoryForm(inputTags){
+  function handleUserCategoryForm(inputTags) {
     let categoryInputArray = []
     inputTags.map((input) => {
       categoryInputArray.push(parseInt(input.value))
     })
     categoryFormValues["tag_id"] = categoryInputArray
-  }
- 
-// need to refactor so that this is not a direct repition on the handleUserSubmit function below
-  function handleAddToMyGoals(event) {
-    // need to ensure a user cannot readd a goal that is already theirs!!!
 
-    fetch(`/api/goals/${event.target.id}`)
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((this_goal) => {
-            let thisCategoryInputArray = []
-            this_goal.tags.map((tag) => {
-              thisCategoryInputArray.push(tag.id)
-            })
-            categoryFormValues["tag_id"] = thisCategoryInputArray
-            goalFormValues["title"] = this_goal.title
-            goalFormValues["description"] = this_goal.description
-            goalFormValues["status"] = "unstarted"
-            goalFormValues["user_id"] = user.id
-            goalFormValues["copied_from"] = this_goal.id
-          }).then(() => {
-            fetch(`/api/goals`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(goalFormValues)
-            }).then(response => {
-              if (response.ok) {
-                response.json().then((goal) => {
-                  fetch(`/api/goals/${goal.id}/goal_tags`, {
-                    // post to /api/goals/:goal_id/goal_tags the categoryFormValues
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(categoryFormValues)
-                  })
-                    .then(tagResponse => {
+    // for react-select element validation
+    // checking if within the modal form and depending on if categories have been input, setting strings for react-select classname
+    if (withinForm && categoryInputArray.length == 0) {
+      setHasCategory('form-error')
+    } else if (withinForm && categoryInputArray.length >= 1) {
+      setHasCategory('validated')
+    }
+  }
+
+  function postGoal(e, goalType) {
+    e.preventDefault()
+    if (goalType == 'new') {
+
+      // for react-select element validation
+      setWithinForm(true)
+      if (categoryFormValues["tag_id"].length == 0) {
+        setHasCategory('form-error')
+      } else { setHasCategory('validated') }
+
+      let form = e.currentTarget
+      if (form.checkValidity() === false || !hasCategory) {
+        e.stopPropagation();
+        setValidated(true);
+        return false;
+      }
+      // setting user id to the current user based on login
+      setValidated(true);
+      goalFormValues["user_id"] = user.id
+      postGoalAndTags(goalType);
+
+
+
+    } else {
+
+      fetch(`/api/goals/${e.target.id}`)
+        .then((response) => {
+          if (response.ok) {
+            response.json().then((this_goal) => {
+              let thisCategoryInputArray = []
+              this_goal.tags.map((tag) => {
+                thisCategoryInputArray.push(tag.id)
+              })
+              categoryFormValues["tag_id"] = thisCategoryInputArray
+              goalFormValues["title"] = this_goal.title
+              goalFormValues["description"] = this_goal.description
+              goalFormValues["status"] = "unstarted"
+              goalFormValues["user_id"] = user.id
+              goalFormValues["copied_from"] = this_goal.id
+            }).then(() => {
+              postGoalAndTags(goalType)
+            });
+          }
+        });
+    }
+
+    function postGoalAndTags(goalType) {
+      let closeModal = false;
+      // post to /api/goals the goalFormValues
+      fetch(`/api/goals`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(goalFormValues)
+      })
+        .then(response => {
+          if (response.ok) {
+            response.json().then((goal) => {
+              // .then to get the posted goal's id from the response
+              fetch(`/api/goals/${goal.id}/goal_tags`, {
+                // post to /api/goals/:goal_id/goal_tags the categoryFormValues
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(categoryFormValues)
+              })
+                .then(tagResponse => {
+                  if (tagResponse.ok) {
+                    tagResponse.json().then(((tagResponse) => { 
                       // add new goal to the goals state, tag response is the complete goal with tags
-                      tagResponse.json().then(((tagResponse) => {
-                        setAllGoals([...allGoals, tagResponse[0]])
-                      // resetting myGoals state while maintaining previously loaded data, only if that data exists
-                        {myGoals ? setMyGoals([...myGoals, tagResponse[0]]) : setMyGoals([tagResponse[0]])}
-                        // setMyGoals([...myGoals, tagResponse[0]])
+                      setAllGoals([...allGoals, tagResponse[0]])
+                      { myGoals ? setMyGoals([...myGoals, tagResponse[0]]) : setMyGoals([tagResponse[0]]) }
+
+                      if (goalType == 'copy') {
                         toast.success(<>You added <strong>{tagResponse[0].title}</strong> to your goals!</>, {
                           position: "top-right",
                           autoClose: 2000,
@@ -97,77 +141,50 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                           pauseOnHover: false,
                           draggable: false,
                           progress: undefined,
-                          });
-                      }))
-                    })
+                        });
+                      } else {
+                        closeModal = true;
+                      }
+                    }))
+                  } else {
+                    let errormessage = 'This goal could not be found.';
+                    if (goalType == 'new') {
+                      // deletes the goal that was posted without goal tags (an incomplete record), in case the server calls error out along the way
+                      handleGoalDelete(goal.id)
+                      errormessage = 'unsuccessful post of tags to server'
+                    }
+                    console.log(errormessage)
+                  }
                 })
-              } else (console.log("This goal could not be found."))
-            })
-          }
-          )
-        }
-      })
-  }
-
-  function handleUserSubmit(e) {
-    e.preventDefault()
-
-    // setting user id to the current user based on login
-    goalFormValues["user_id"] = user.id
-
-    // post to /api/goals the goalFormValues
-    fetch(`/api/goals`, {
-      method: "POST",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify(goalFormValues)
-    }) 
-    .then(response => {
-      if (response.ok) {
-        response.json().then((goal) => {
-        // .then to get the posted goal's id from the response
-          fetch(`/api/goals/${goal.id}/goal_tags`, {
-        // post to /api/goals/:goal_id/goal_tags the categoryFormValues
-            method: "POST",
-            headers: {"Content-Type" : "application/json"},
-            body: JSON.stringify(categoryFormValues)
-          })
-          .then(tagResponse => {
-            if (tagResponse.ok) {
-            // add new goal to the goals state, tag response is the complete goal with tags
-              tagResponse.json().then(((tagResponse) => {
-                setMyGoals([...myGoals, tagResponse[0]])
-                setAllGoals([...allGoals, tagResponse[0]])
-              }))
-            } else (console.log("unsuccessful post of tags to server"))
-          })
+            });
+          } else { console.log("That didn't work, try again.") }
         });
-      } 
-      else (console.log("that didn't work"))
-    })
-    handleClose()
+      if (goalType == 'new' && closeModal) {
+        handleClose();
+      }
+    }
   }
 
-  function handleGoalDelete(e) {
-    fetch(`api/goals/${e.target.id}`, 
-    { method: "DELETE" })
-    .then((response) => {
-      if (response.ok) {
-        let updatedGoals = myGoals.filter((goal) => 
-          goal.id != e.target.id
-        )
-        let updatedAllGoals = allGoals.filter((goal) => 
-          goal.id != e.target.id
-        )
-        setMyGoals(updatedGoals)
-        setAllGoals(updatedAllGoals)
-      } else (console.log("Unsuccessful deletion of this goal, please try again"))
-    })
+  function handleGoalDelete(goalId) {
+    fetch(`api/goals/${goalId}`,
+      { method: "DELETE" })
+      .then((response) => {
+        if (response.ok) {
+          let updatedGoals = myGoals.filter((goal) =>
+            goal.id != goalId
+          )
+          let updatedAllGoals = allGoals.filter((goal) =>
+            goal.id != goalId
+          )
+          setMyGoals(updatedGoals)
+          setAllGoals(updatedAllGoals)
+        } else (console.log("Unsuccessful deletion of this goal, please try again"))
+      })
   }
 
   function handleGoalEdit(e) {
     fetch(`/api/goals/${e.target.id}`,
-      {
-        method: "PATCH",
+      { method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ "status": e.target.innerText })
       })
@@ -184,13 +201,19 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
 
   // modal functions and variables
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    // resetting state variables which control validation of react-select element 
+    setShow(false);
+    setValidated(false);
+    setWithinForm(false);
+    setHasCategory(true);
+  };
   const handleShow = () => setShow(true);
 
   // generates status dropdown form options
   let status_options = ["unstarted", "in-progress", "completed"]
   let status_dropdown = status_options.map((option) => {
-    return(
+    return (
       <option key={option}>{option}</option>
     )
   })
@@ -203,41 +226,41 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
 
   // determines which goal prop the page should display based on what page the user has navigated to 
   let goals
-  if (page == "all"){
+  if (page == "all") {
     goals = allGoals
   } else (goals = myGoals)
 
   // checks to see if goals exists before rendering the goal cards
-  let goal_cards =  
+  let goal_cards =
     goals?.map((goal) => {
-    // splits the description of the goal into strings by sentence, displays them each in their own line within the card
-    let goal_card_desc = goal.description.split(".").map((sentence) => {
-      if (sentence.length) {
-        return(
-          <Card.Text key={Math.random() * 100}>
-            {sentence}
-          </Card.Text>
-        )
-      }
-    })
+      // splits the description of the goal into strings by sentence, displays them each in their own line within the card
+      let goal_card_desc = goal.description.split(".").map((sentence) => {
+        if (sentence.length) {
+          return (
+            <Card.Text key={Math.random() * 100}>
+              {sentence}
+            </Card.Text>
+          )
+        }
+      })
 
-    // track progress status drop down options with disabling if already selected for that goal
-    let statusEditButtons = status_options.map((option) => {
-      if (option == goal.status){
-        return(
-          <Dropdown.Item disabled key={option} as="button" id={goal.id} onClick={(e) => handleGoalEdit(e)}>{option}</Dropdown.Item>
-        )
-      } else return(
-        <Dropdown.Item key={option} as="button" id={goal.id} onClick={(e) => handleGoalEdit(e)}>{option}</Dropdown.Item>
-      )
-    })
+      // track progress status drop down options with disabling if already selected for that goal
+      let statusEditButtons = status_options.map((option) => {
+        if (option == goal.status) {
+          return (
+            <Dropdown.Item disabled key={option} as="button" id={goal.id} onClick={(e) => handleGoalEdit(e)}>{option}</Dropdown.Item>
+          )
+        } else { return (
+          <Dropdown.Item key={option} as="button" id={goal.id} onClick={(e) => handleGoalEdit(e)}>{option}</Dropdown.Item>
+        )}
+      })
 
-    // diables/enables add to my goals button based on which user is logged in 
-    let userAddButton
-    // console.log(userCopies)
-    if (goal.user.name == user?.name) {
-      userAddButton = true
-    } else (userAddButton = false)
+      // diables/enables add to my goals button based on which user is logged in 
+      let userAddButton
+      // console.log(userCopies)
+      if (goal.user.name == user?.name) {
+        userAddButton = true
+      } else {userAddButton = false}
 
     return(
           <Col className="col-6" key={goal.id}>
@@ -261,7 +284,7 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                 {/* renders add to my goals button if showing all goals, omits if user goals */}
                 {page == "all" ?
                 <>
-                  <Button disabled={userAddButton || copiedGoals.includes(goal.id)} id={goal.id} size="sm" variant="secondary" className="float-end" onClick={(event) => handleAddToMyGoals(event)}>Copy to my goals</Button> 
+                  <Button disabled={userAddButton || copiedGoals.includes(goal.id)} id={goal.id} size="sm" variant="secondary" className="float-end" onClick={(event) => postGoal(event, 'copy')}>Copy to my goals</Button> 
                 </> : 
                 <>
                   <Dropdown>
@@ -274,13 +297,12 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                     </Dropdown.Menu>
                   </Dropdown>
 
-                  <Button id={goal.id} size="sm" variant="outline-secondary" className="trash-button ms-1" onClick={(e) => handleGoalDelete(e)}>
+                  <Button id={goal.id} size="sm" variant="outline-secondary" className="trash-button ms-1" onClick={(e) => handleGoalDelete(e.target.id)}>
                     <img src={trashCan} className="trash-icon" alt="trash can" />
                     Delete
                   </Button>
                 </>
                 }
-
                 </div>
               </Card.Body>
             </Card>
@@ -314,36 +336,36 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                 </Modal.Header>
                 <Modal.Body>
 
-                  
-
-                  <Form onSubmit={(e) => handleUserSubmit(e)} id="user_goal_form">
+                  <Form onSubmit={(e) => postGoal(e, 'new')} id="user_goal_form" noValidate validated={validated}>
 
                     <Form.Group className="mb-3" controlId="title">
                       <Form.Floating>
-                        <Form.Control placeholder="Title" type="title" onChange={(e) => handleUserGoalForm(e)}  />
+                        <Form.Control required placeholder="Title" type="title" onChange={(e) => handleUserGoalForm(e)}  />
                         <label htmlFor="floatingInputCustom">Title</label>
                       </Form.Floating>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="description">
                       <Form.Floating>
-                        <Form.Control placeholder="Description" type="description" as="textarea" style={{ height: '120px' }} onChange={(e) => handleUserGoalForm(e)} />
+                        <Form.Control required placeholder="Description" type="description" as="textarea" style={{ height: '120px' }} onChange={(e) => handleUserGoalForm(e)} />
                         <label htmlFor="floatingInputCustom">Description</label>
                       </Form.Floating>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
                       <FloatingLabel label="Status" controlId="status">
-                        <Form.Select onChange={(e) => handleUserGoalForm(e)}>
-                          <option>Select the current goal status</option>
+                        <Form.Select onChange={(e) => handleUserGoalForm(e)} required defaultValue="unstarted">
                           {status_dropdown}
                         </Form.Select>
                       </FloatingLabel>
                     </Form.Group>
                     {/* first selected will be the main category */}
                   <Form.Group className="mb-3">
-                    <label id="category-selector-label" for="category-selector-inp">Categories</label>
-                    <Select className="category-selector-container" classNamePrefix="category-selector" 
+                    <label id="category-selector-label" htmlFor="category-selector-inp">Categories</label>
+                    <Select
+                    // className={hasCategory ? 'category-selector-container' : 'category-selector-container form-error'}
+                    className={`category-selector-container ${hasCategory}`}
+                    classNamePrefix="category-selector" 
                     placeholder="First selection will be the main category" 
                     closeMenuOnSelect={false} 
                     isMulti 
@@ -362,14 +384,11 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
 
           </Col> : 
           <></> }
-          
         </Row>
-
         <Row>
         {/* conditionally renders some text if user has not yet submitted any goals */}
           {goal_cards ? goal_cards : <p>Oops - looks like you don't have any goals yet!</p>}
         </Row>
-
       </Container>
     </div>
   );
