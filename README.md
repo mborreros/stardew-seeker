@@ -9,13 +9,13 @@ This app is built on its own Ruby on Rails server. The routes listed below are a
 
 #### Index all users
 
-```http
+```
   GET /api/users
 ```
 
 #### Show a user
 
-```http
+```
   GET /api/users/${id}
 ```
 
@@ -25,7 +25,7 @@ This app is built on its own Ruby on Rails server. The routes listed below are a
 
 #### Authorize a user
 
-```http
+```
   GET /auth
 ```
 | Parameter | Type     | Description                       |
@@ -36,7 +36,7 @@ Note that the user id cannot be explicitly passed through the route, must be hel
 
 #### Create a user
 
-```http
+```
   POST /signup
 ```
 
@@ -49,7 +49,7 @@ Note that the user id cannot be explicitly passed through the route, must be hel
 
 #### Create a user session
 
-```http
+```
   POST /login
 ```
 | Parameter | Type     | Description                       |
@@ -60,7 +60,7 @@ Note that the user id cannot be explicitly passed through the route, must be hel
 
 #### Delete a user session
 
-```http
+```
   DESTROY /logout
 ```
 | Parameter | Type     | Description                       |
@@ -71,13 +71,13 @@ Note that the user id cannot be explicitly passed through the route, must be hel
 
 #### Index all goals
 
-```http
+```
   GET /api/goals
 ```
 
 #### Show a goal
 
-```http
+```
   GET /api/goals/${id}
 ```
 | Parameter | Type     | Description                       |
@@ -86,7 +86,7 @@ Note that the user id cannot be explicitly passed through the route, must be hel
 
 #### Show goals associated with a user
 
-```http
+```
   GET /api/my_goals/${id}
 ```
 | Parameter | Type     | Description                       |
@@ -95,7 +95,7 @@ Note that the user id cannot be explicitly passed through the route, must be hel
 
 #### Update a goal
 
-```http
+```
   UPDATE /api/goals/${id}
 ```
 | Parameter | Type     | Description                       |
@@ -104,7 +104,7 @@ Note that the user id cannot be explicitly passed through the route, must be hel
 
 #### Delete a goal
 
-```http
+```
   DESTROY /api/goals/${id}
 ```
 | Parameter | Type     | Description                       |
@@ -115,7 +115,7 @@ Note that when a goal's record is deleted, the associated goal_tags are dependen
 
 #### Create a goal
 
-```http
+```
   POST /api/goals
 ```
 
@@ -128,7 +128,7 @@ Note that when a goal's record is deleted, the associated goal_tags are dependen
 
 #### Create associated tags for a created goal (nested route)
 
-```http
+```
   POST /api/goals/${id}/goal_tags
 ```
 
@@ -140,12 +140,12 @@ Note that when a goal's record is deleted, the associated goal_tags are dependen
 Note that this is a nested route. Once a goal is created by the user on the front end and the POST request is sent to the server, the new goal must be sent to this route to create the associated goal_tags for the new goal
 
 #### Index all tags
-```http
+```
   GET /api/tags
 ```
 
 #### Show a tag
-```http
+```
   GET /api/tags/${id}
 ```
 
@@ -154,12 +154,12 @@ Note that this is a nested route. Once a goal is created by the user on the fron
 | `id`      | `integer` | **required** id of tag|
 
 #### Index all goal tags
-```http
+```
   GET /api/goal_tags
 ```
 
 #### Show a goal tag
-```http
+```
   GET /api/goal_tags/${id}
 ```
 
