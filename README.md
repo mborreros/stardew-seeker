@@ -176,7 +176,7 @@ Note that this is a nested route. Once a goal is created by the user on the fron
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/mborreros/stardew-seeker
 ```
 
 Install dependencies
