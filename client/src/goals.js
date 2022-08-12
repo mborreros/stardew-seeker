@@ -82,8 +82,6 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
       goalFormValues["user_id"] = user.id
       postGoalAndTags(goalType);
 
-
-
     } else {
 
       fetch(`/api/goals/${e.target.id}`)
