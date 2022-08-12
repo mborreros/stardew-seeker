@@ -69,7 +69,7 @@ function MyAccount({ user, myGoals }) {
               <span className="float-end pe-5 act-submission-label"></span>
             </Card.Header>
             <Card.Body>
-              You've submitted <b>{myGoals?.length} goal{myGoals?.length > 1 ? "s" : ""} </b> since joining {moment(user?.created_at).format("MMMM D, YYYY")}
+              You've submitted <b>{myGoals?.length ? myGoals?.length : "0"} goal{myGoals?.length > 1 || !myGoals?.length ? "s" : ""} </b> since joining {moment(user?.created_at).format("MMMM D, YYYY")}
             </Card.Body>
           </Card>
         </Col>
