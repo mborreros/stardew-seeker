@@ -361,7 +361,6 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                   <Form.Group className="mb-3">
                     <label id="category-selector-label" htmlFor="category-selector-inp">Categories</label>
                     <Select
-                    // className={hasCategory ? 'category-selector-container' : 'category-selector-container form-error'}
                     className={`category-selector-container ${hasCategory}`}
                     classNamePrefix="category-selector" 
                     placeholder="First selection will be the main category" 

@@ -189,7 +189,6 @@ code {
   padding-top: 100px;
 }
 
-/* HERE IS WHAT YOU ARE MODIFYING */
 .category-selector-container.form-error .category-selector__control{
   border-color: #dc3545;
 }
