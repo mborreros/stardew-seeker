@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resources :goal_tags, only: [:index, :show]
 
     get "/my_goals/:id", to: "goals#user_goals"
+    get "/goals_order", to: "goals#goals_order"
   end
 
   post "/signup", to: "users#create"

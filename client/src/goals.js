@@ -46,25 +46,39 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
   }
 
   function handleUserCategoryForm(inputTags) {
+    
     let categoryInputArray = []
     inputTags.map((input) => {
       categoryInputArray.push(parseInt(input.value))
     })
     categoryFormValues["tag_id"] = categoryInputArray
 
+    console.log(categoryFormValues)
+
     // for react-select element validation
     // checking if within the modal form and depending on if categories have been input, setting strings for react-select classname
     if (withinForm && categoryInputArray.length == 0) {
       setHasCategory('form-error')
-    } else if (withinForm && categoryInputArray.length >= 1) {
+    } else if (withinForm && categoryInputArray.length > 0) {
       setHasCategory('validated')
     }
+  }
+
+  function handleButton(e){
+
+
+    fetch("/api/goals_order")
+      .then((response) => response.json())
+      .then((goals) => {
+        if (goals) {
+          console.log(goals)}
+        else (console.log("That didn't work"))
+      })
   }
 
   function postGoal(e, goalType) {
     e.preventDefault()
     if (goalType == 'new') {
-
       // for react-select element validation
       setWithinForm(true)
       if (categoryFormValues["tag_id"].length == 0) {
@@ -127,6 +141,8 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
                   if (tagResponse.ok) {
                     tagResponse.json().then(((tagResponse) => { 
                       // add new goal to the goals state, tag response is the complete goal with tags
+                      // setCategoryFormValues(defaultCategoryFormValue)
+                      // setGoalFormValues(defaultGoalFormValues)
                       setAllGoals([...allGoals, tagResponse[0]])
                       { myGoals ? setMyGoals([...myGoals, tagResponse[0]]) : setMyGoals([tagResponse[0]]) }
 
@@ -325,6 +341,7 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
         {page == "user" ? 
           <Col>
             <Button variant="primary" className="float-end" onClick={handleShow}>Add a Goal</Button>
+            <Button variant="secondary" className="float-end" onClick={(e) => handleButton(e)}>Live Code</Button>
 
       {/* add a user goal form modal */}
               <Modal show={show} onHide={handleClose}>
@@ -352,7 +369,8 @@ function AllGoals( { user, page, allGoals, myGoals, setAllGoals, setMyGoals, cat
 
                     <Form.Group className="mb-3">
                       <FloatingLabel label="Status" controlId="status">
-                        <Form.Select onChange={(e) => handleUserGoalForm(e)} required defaultValue="unstarted">
+                        <Form.Select onChange={(e) => handleUserGoalForm(e)} required defaultValue="Select a status">
+                          <option disabled>Select a status</option>
                           {status_dropdown}
                         </Form.Select>
                       </FloatingLabel>

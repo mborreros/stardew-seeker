@@ -39,6 +39,16 @@ class GoalsController < ApplicationController
     head :no_content
   end
 
+  def goals_order
+
+    all_goals_ordered = Goal.all.order(:title).pluck(:title)
+    if all_goals_ordered
+      render json: all_goals_ordered, status: :ok
+    else
+      render json: {errors: "Unable to find and order all goals alphabetically"}, status: :not_found
+    end
+  end
+
   private
 
   def goal_params
